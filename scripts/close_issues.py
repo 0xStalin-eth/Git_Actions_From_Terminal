@@ -1,10 +1,11 @@
 import os
 import sys
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # "owner/repo" or full GitHub URL
@@ -20,8 +21,8 @@ def parse_repo(value):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python open_issues.py <open_numbers.txt> [owner/repo]")
-        print("open_numbers.txt format: one issue number per line")
+        print("Usage: python scripts/close_issues.py <config/close_numbers.txt> [repo_url]")
+        print("close_numbers.txt format: one issue number per line")
         sys.exit(1)
 
     json_file = sys.argv[1]
@@ -47,22 +48,22 @@ def main():
         }
     )
 
-    opened = 0
+    closed = 0
     failed = 0
 
     for number in numbers:
         url = f"https://api.github.com/repos/{repo}/issues/{number}"
-        resp = session.patch(url, json={"state": "open"})
+        resp = session.patch(url, json={"state": "closed"})
         if resp.status_code == 200:
             data = resp.json()
-            print(f"[OK]   #{data['number']} reopened — {data['title']}")
-            opened += 1
+            print(f"[OK]   #{data['number']} closed — {data['title']}")
+            closed += 1
         else:
             msg = resp.json().get("message", resp.text)
             print(f"[FAIL] #{number}: {resp.status_code} {msg}")
             failed += 1
 
-    print(f"\nDone. Opened: {opened}  Failed: {failed}")
+    print(f"\nDone. Closed: {closed}  Failed: {failed}")
 
 
 if __name__ == "__main__":

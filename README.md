@@ -2,6 +2,24 @@
 
 Python scripts to bulk open and close GitHub issues by issue number.
 
+## Project Structure
+
+```
+.
+├── README.md
+├── requirements.txt
+├── .env.example
+├── .env                          # your local config (gitignored)
+├── scripts/
+│   ├── open_issues.py
+│   └── close_issues.py
+└── config/
+    ├── open_numbers.example.txt
+    ├── close_numbers.example.txt
+    ├── open_numbers.txt          # issue numbers to reopen
+    └── close_numbers.txt         # issue numbers to close
+```
+
 ## Requirements
 
 - Python 3
@@ -40,8 +58,8 @@ source ~/.zshrc    # or ~/.bashrc or ~/.zshenv
 
 **3. Prepare your issue number files:**
 ```bash
-cp open_numbers.example.txt open_numbers.txt
-cp close_numbers.example.txt close_numbers.txt
+cp config/open_numbers.example.txt config/open_numbers.txt
+cp config/close_numbers.example.txt config/close_numbers.txt
 ```
 
 Edit each file with the issue numbers you want to act on, one per line:
@@ -55,16 +73,16 @@ Edit each file with the issue numbers you want to act on, one per line:
 
 **Reopen issues:**
 ```bash
-python open_issues.py open_numbers.txt
+python scripts/open_issues.py config/open_numbers.txt
 ```
 
 **Close issues:**
 ```bash
-python close_issues.py close_numbers.txt
+python scripts/close_issues.py config/close_numbers.txt
 ```
 
 **Override the repo inline (no .env needed):**
 ```bash
-python open_issues.py open_numbers.txt https://github.com/owner/repo
-python close_issues.py close_numbers.txt https://github.com/owner/repo
+python scripts/open_issues.py config/open_numbers.txt https://github.com/owner/repo
+python scripts/close_issues.py config/close_numbers.txt https://github.com/owner/repo
 ```
