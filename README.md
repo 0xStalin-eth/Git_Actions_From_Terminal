@@ -1,4 +1,4 @@
-# Cyfrin Automation Tools
+# Automation Tools
 
 A collection of Python automation scripts grouped by purpose.
 
