@@ -17,7 +17,12 @@ cp mitigation-review.sh /usr/local/bin/mitigation-review
 
 ## Before running
 
-Edit the script and update each `add_and_pull` call with the correct values for the engagement:
+Open the installed script for editing:
+```bash
+vi /usr/local/bin/mitigation-review
+```
+
+Update each `add_and_pull` call with the correct values for the engagement:
 
 ```bash
 add_and_pull <remote_name> <remote_url> <exact_folder_name> <mitigations_branch_name>
