@@ -25,6 +25,20 @@ gh_issues/
 - Python 3
 - A GitHub [classic personal access token](https://github.com/settings/tokens) with the `repo` scope (or `public_repo` for public repos)
 
+### Organization-owned repos
+
+If the repo belongs to a GitHub organization (e.g. `github.com/my-org/repo`) you need a **fine-grained personal access token** with access explicitly requested for that specific repo:
+
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens) → **Fine-grained tokens** → Generate new token.
+2. Under **Resource owner** select the organization.
+3. Under **Repository access** choose the specific repo.
+4. Under **Permissions** set:
+   - **Issues** → Read and Write
+   - **Metadata** → Read (required by GitHub for any repo-scoped token)
+5. Submit the request — the org owner must approve it before the token becomes usable.
+
+> **Note:** Classic PATs with `repo` scope may still be rejected with `401 Bad credentials` on org repos that enforce stricter token policies. Prefer fine-grained tokens for org repos.
+
 ## Setup
 
 **1. Install dependencies:**
@@ -69,18 +83,27 @@ Edit each file with the issue numbers you want to act on, one per line:
 
 ## Usage
 
-**Reopen issues:**
+**Reopen issues — inline numbers:**
 ```bash
-python gh_issues/scripts/open_issues.py gh_issues/config/open_numbers.txt
+python gh_issues/scripts/open_issues.py 1 2 3 4 5 6
 ```
 
-**Close issues:**
+**Close issues — inline numbers:**
 ```bash
+python gh_issues/scripts/close_issues.py 1 2 3 4 5 6
+```
+
+**Using a numbers file instead:**
+```bash
+python gh_issues/scripts/open_issues.py gh_issues/config/open_numbers.txt
 python gh_issues/scripts/close_issues.py gh_issues/config/close_numbers.txt
 ```
 
-**Override the repo inline (no .env needed):**
+**Override the repo inline (appended after the numbers or file path):**
 ```bash
+python gh_issues/scripts/open_issues.py 1 2 3 https://github.com/owner/repo
+python gh_issues/scripts/close_issues.py 1 2 3 https://github.com/owner/repo
+
 python gh_issues/scripts/open_issues.py gh_issues/config/open_numbers.txt https://github.com/owner/repo
 python gh_issues/scripts/close_issues.py gh_issues/config/close_numbers.txt https://github.com/owner/repo
 ```

@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-load_dotenv(Path(__file__).parent.parent / ".env")
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO = os.getenv("GITHUB_REPO")  # "owner/repo" or full GitHub URL
@@ -21,12 +21,23 @@ def parse_repo(value):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python scripts/open_issues.py <config/open_numbers.txt> [repo_url]")
-        print("open_numbers.txt format: one issue number per line")
+        print("Usage:")
+        print("  python scripts/open_issues.py <config/open_numbers.txt> [repo_url]")
+        print("  python scripts/open_issues.py 1 2 3 4 5 [repo_url]")
         sys.exit(1)
 
-    json_file = sys.argv[1]
-    repo = parse_repo(sys.argv[2] if len(sys.argv) > 2 else GITHUB_REPO)
+    # Detect inline numbers vs file path: if the first arg is all digits, treat all
+    # digit args as issue numbers and the last arg (if non-digit) as the repo.
+    args = sys.argv[1:]
+    if args[0].isdigit():
+        digit_args = [a for a in args if a.isdigit()]
+        non_digit_args = [a for a in args if not a.isdigit()]
+        numbers = [int(a) for a in digit_args]
+        repo = parse_repo(non_digit_args[0] if non_digit_args else GITHUB_REPO)
+    else:
+        with open(args[0]) as f:
+            numbers = [int(line.strip()) for line in f if line.strip()]
+        repo = parse_repo(args[1] if len(args) > 1 else GITHUB_REPO)
 
     if not GITHUB_TOKEN:
         print("Error: GITHUB_TOKEN is not set.")
@@ -35,9 +46,6 @@ def main():
     if not repo:
         print("Error: repo not provided. Pass it as argument or set GITHUB_REPO in .env")
         sys.exit(1)
-
-    with open(json_file) as f:
-        numbers = [int(line.strip()) for line in f if line.strip()]
 
     session = requests.Session()
     session.headers.update(
