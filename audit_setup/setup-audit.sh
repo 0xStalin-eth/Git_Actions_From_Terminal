@@ -31,11 +31,12 @@ git fetch origin
 
 # ── Worktrees ──────────────────────────────────────────────────────────────────
 echo "→ Creating worktrees"
-git worktree add ManualAudit audit/Stalin
-git worktree add Report      report
-git worktree add Main        main
-git worktree add -b solace   Solace    report
-git worktree add -b grimoire Grimoire  audit/Stalin
+git worktree add ManualAudit    audit/Stalin
+git worktree add Report         report
+git worktree add Main           main
+git worktree add -b solace      Solace      report
+git worktree add -b grimoire    Grimoire    audit/Stalin
+git worktree add -b audit-fixes AuditFixes  main
 
 # ── Summary ────────────────────────────────────────────────────────────────────
 echo
